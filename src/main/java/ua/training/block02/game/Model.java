@@ -1,8 +1,10 @@
 package ua.training.block02.game;
 
+import java.util.ArrayList;
+
 /**
  * <p> The main model class.
- * It is describing the game instance and its behaviour.
+ * It describes the game instance and its behaviour.
  *
  * @author Alexander Bogomolnyy
  * @version 1.0 30.10.2016.
@@ -10,83 +12,48 @@ package ua.training.block02.game;
 public class Model {
 
     /**
-     * A constant holding the minimum value of default range.
+     * Secret number offered by game.
      */
-    public static final int MIN_RAND = 0;
+    private int secretValue;
 
     /**
-     * A constant holding the maximum value of default range.
+     * Minimum game barrier
      */
-    public static final int MAX_RAND = 100;
+    private int minBarrier;
 
     /**
-     * Number offered by game.
+     * Maximum game barrier
      */
-    private int goal;
+    private int maxBarrier;
+
+    private ArrayList<Integer> statistics;
 
     /**
-     * Lower value of the range
-     */
-    private int bottom;
-
-    /**
-     * Upper limit of the range
-     */
-    private int top;
-
-    /**
-     * The constructor for default game.
+     * The constructor without parameters.
      */
     public Model() {
-        goal = randomValue(MIN_RAND, MAX_RAND);
-        bottom = MIN_RAND;
-        top = MAX_RAND;
+        statistics = new ArrayList<>();
     }
 
     /**
+     * The method checks matching trial value to secret one.
+     * If values is not te same, the trial value sets as a minimum barrier, if it is less
+     * than secret value and sets as maximum in opposite one.
+     * The method adds value to the current game statistics.
      *
-     * The constructor for game started in custom range.
-     *
-     * @param bottom - lower value of the custom range
-     * @param top - upper limit of the custom range
+     * @param value - check value
+     * @return true if value is te same as secret one
+     *         false in other case
      */
-    public Model(int bottom, int top) {
-        goal = randomValue(bottom, top);
-        this.bottom = bottom;
-        this.top = top;
-    }
-
-    /**
-     * This method generates random int value in given range.
-     *
-     * @param bottom - lower value of the range
-     * @param top - upper limit of the range
-     * @return random value in range
-     */
-    private int randomValue(int bottom, int top) {
-        if (bottom > top)
-            throw new IllegalArgumentException("Lower value of the range cannot be bigger than upper one.");
-        return (int)(bottom + Math.random()*(top - bottom));
-    }
-
-
-    /**
-     * This method compares trial value with current game range.
-     *
-     * @param attempt - test value
-     * @return 0 - if attempt value equals to goal value
-     *         -1 - if attempt value lower than goal value
-     *         1 - if attempt value upper than goal value
-     */
-    public int compareWithGoal(int attempt) {
-        if (goal == attempt) return 0;
-        if (attempt < goal) {
-            bottom = attempt;
-            return -1;
+    public boolean checkValue(int value) {
+        statistics.add(value);
+        if (value == secretValue) return true;
+        if (value > secretValue) {
+            maxBarrier = value;
         } else {
-            top = attempt;
-            return 1;
+            minBarrier = value;
         }
+        return false;
     }
 
     /**
@@ -96,18 +63,51 @@ public class Model {
      * @return true - if value is in current game range
      */
     public boolean inRange(int value) {
-        return value >= bottom && value <= top;
+        return value > minBarrier && value < maxBarrier;
     }
 
-    public int getGoal() {
-        return goal;
+    /**
+     * The method sets minimum and maximum barriers.
+     *
+     * @param minBarrier - value of minimum barrier
+     * @param maxBarrier - value of maximum barrier
+     */
+    public void setPrimaryBarrier(int minBarrier, int maxBarrier) {
+        if (minBarrier > maxBarrier)
+            throw new IllegalArgumentException("Minimum barrier cannot be bigger than maximum one.");
+        this.minBarrier = minBarrier;
+        this.maxBarrier = maxBarrier;
     }
 
-    public int getBottom() {
-        return bottom;
+    /**
+     * The method generates and sets game secret value.
+     */
+    public void setSecretValue() {
+        this.secretValue = (int)Math.ceil(Math.random()*(maxBarrier - minBarrier - 1) + minBarrier);
     }
 
-    public int getTop() {
-        return top;
+    /**
+     * The method initialize new empty statistics of the game.
+     * After calling previous statistics will be lost.
+     */
+    public void newStatistics() {
+        this.statistics = new ArrayList<>();
     }
+
+    public ArrayList<Integer> getStatistics() {
+        return statistics;
+    }
+
+    public int getSecretValue() {
+        return secretValue;
+    }
+
+    public int getMinBarrier() {
+        return minBarrier;
+    }
+
+    public int getMaxBarrier() {
+        return maxBarrier;
+    }
+
 }

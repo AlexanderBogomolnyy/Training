@@ -27,93 +27,121 @@ public class ModelTest {
     @Before
     public void init() {
         model = new Model();
+        model.setPrimaryBarrier(GameSettings.PRIMARY_MIN_BARRIER, GameSettings.PRIMARY_MAX_BARRIER);
     }
 
     /**
-     * Testing of wrong argument position in Model constructor
+     * Checking of {@link Model#checkValue(int)} method correct performing.
      *
      * @throws Exception - exception in test
      */
     @Test
-    public void testIllegalRangeInConstructor() throws Exception {
-        exception.expect(IllegalArgumentException.class);
-        exception.expectMessage("Lower value of the range cannot be bigger than upper one.");
-        model = new Model(100, -1);
+    public void testCheckValue() throws Exception {
+        // test value checking
+        model.setSecretValue();
+        int secretValue = model.getSecretValue();
+        for (int i = model.getMinBarrier() + 1; i < model.getMaxBarrier(); i++) {
+            if (i == secretValue) assertTrue(model.checkValue(i));
+            else assertFalse(model.checkValue(i));
+        }
+        // test barrier changes
+        for (int i = 0; i < 1000; i++) {
+            model.setPrimaryBarrier(GameSettings.PRIMARY_MIN_BARRIER, GameSettings.PRIMARY_MAX_BARRIER);
+            model.setSecretValue();
+            secretValue = model.getSecretValue();
+            int leftShift = (int) Math.ceil((secretValue - GameSettings.PRIMARY_MIN_BARRIER) / 2) + GameSettings.PRIMARY_MIN_BARRIER;
+            int rightShift = (int) Math.floor((GameSettings.PRIMARY_MAX_BARRIER - secretValue) / 2) + secretValue;
+            if (leftShift != secretValue && rightShift != secretValue) {
+                model.checkValue(leftShift);
+                model.checkValue(rightShift);
+                assertEquals(leftShift, model.getMinBarrier());
+                assertEquals(rightShift, model.getMaxBarrier());
+            }
+            // check if statistics not empty
+            assertFalse(model.getStatistics().isEmpty());
+        }
+        model.setPrimaryBarrier(GameSettings.PRIMARY_MIN_BARRIER, GameSettings.PRIMARY_MAX_BARRIER);
+        model.setSecretValue();
+        model.checkValue(model.getSecretValue());
+        assertEquals(GameSettings.PRIMARY_MIN_BARRIER, model.getMinBarrier());
+        assertEquals(GameSettings.PRIMARY_MAX_BARRIER, model.getMaxBarrier());
+        assertFalse(model.getStatistics().isEmpty());
     }
 
     /**
-     * Testing of accessory of random goal value to the range over multiple
-     * default constructor invocation
-     *
-     * @throws Exception - exception in test
-     */
-    @Test
-    public void testRandomDefaultGame() throws Exception{
-        int firstGame = model.getGoal();
-        int secondGame = new Model().getGoal();
-        int thirdGame = new Model().getGoal();
-        assertNotEquals(firstGame, secondGame);
-        assertNotEquals(secondGame, thirdGame);
-        assertNotEquals(firstGame, thirdGame);
-    }
-
-    /**
-     * Testing of accessory of random goal value to the range over multiple
-     * constructor invocation
-     *
-     * @throws Exception - exception in test
-     */
-    @Test
-    public void testRandomCustomGame() throws Exception{
-        int firstGame = new Model(5, 50).getGoal();
-        int secondGame = new Model(-5, 70).getGoal();
-        int thirdGame = new Model(-50, 150).getGoal();
-        assertNotEquals(firstGame, secondGame);
-        assertNotEquals(secondGame, thirdGame);
-        assertNotEquals(firstGame, thirdGame);
-    }
-
-    /**
-     * Testing of accessory of goal value to the initial range
-     *
-     * @throws Exception - exception in test
-     */
-    @Test
-    public void testConstructorGoalInRange() throws Exception {
-        int defaultOne = model.getGoal();
-        assertTrue(defaultOne >= Model.MIN_RAND && defaultOne <= Model.MAX_RAND);
-        int firstGame = new Model(5, 50).getGoal();
-        assertTrue(firstGame >= 5 && firstGame <= 50);
-        int secondGame = new Model(-5, 70).getGoal();
-        assertTrue(secondGame >= -5 && secondGame <= 70);
-        int thirdGame = new Model(-50, 150).getGoal();
-        assertTrue(thirdGame >= -50 && thirdGame <= 150);
-    }
-
-    /**
-     * Testing of method, which compare input value with the current game
-     * range
-     *
-     * @throws Exception - exception in test
-     */
-    @Test
-    public void testCompareWithGoal() throws Exception {
-        int goal = model.getGoal();
-        assertEquals(0, model.compareWithGoal(goal));
-        assertEquals(-1, model.compareWithGoal(goal - 5));
-        assertEquals(1, model.compareWithGoal(goal + 5));
-    }
-
-    /**
-     * Testing of method, which check an accessory of input value to the current
-     * game range
+     * Checking inclusion parameter value into the current game range.
      *
      * @throws Exception - exception in test
      */
     @Test
     public void testInRange() throws Exception {
-        assertFalse(model.inRange(-10));
-        assertTrue(model.inRange(50));
-        assertFalse(model.inRange(134));
+        for (int i = GameSettings.PRIMARY_MIN_BARRIER + 1; i < GameSettings.PRIMARY_MAX_BARRIER; i++) {
+            assertTrue(model.inRange(i));
+        }
+        for (int i = Integer.MIN_VALUE; i <= GameSettings.PRIMARY_MIN_BARRIER; i++) {
+            assertFalse(model.inRange(i));
+        }
+        for (int i = GameSettings.PRIMARY_MAX_BARRIER; i < Integer.MAX_VALUE; i++) {
+            assertFalse(model.inRange(i));
+        }
+        assertFalse(model.inRange(Integer.MAX_VALUE));
     }
+
+    /**
+     * Testing of wrong argument position in {@link Model#setPrimaryBarrier(int, int)}
+     *
+     * @throws Exception - exception in test
+     */
+    @Test
+    public void testIllegalArgumentInSetPrimaryBarrier() throws Exception {
+        exception.expect(IllegalArgumentException.class);
+        exception.expectMessage("Minimum barrier cannot be bigger than maximum one.");
+        model.setPrimaryBarrier(100, -1);
+    }
+
+    /**
+     * Test setting min and max barriers in {@link Model}
+     *
+     * @throws Exception - exception in test
+     */
+    @Test
+    public void testSetPrimaryBarrier() throws Exception {
+        assertEquals(GameSettings.PRIMARY_MIN_BARRIER, model.getMinBarrier());
+        assertEquals(GameSettings.PRIMARY_MAX_BARRIER, model.getMaxBarrier());
+        model.setPrimaryBarrier(-1, 1);
+        assertEquals(-1, model.getMinBarrier());
+        assertEquals(1, model.getMaxBarrier());
+    }
+
+    /**
+     * Checking inclusion of secret values into the game range.
+     *
+     * @throws Exception - exception in test
+     */
+    @Test
+    public void testSetSecretValue() throws Exception {
+        int secretValue;
+        for(int i = 0; i < 10000; i++) {
+            model.setSecretValue();
+            secretValue = model.getSecretValue();
+            assertTrue(secretValue > model.getMinBarrier() && secretValue < model.getMaxBarrier());
+        }
+    }
+
+    /**
+     * Test statistics reset
+     *
+     * @throws Exception - exception in test
+     */
+    @Test
+    public void testNewStatistics() throws Exception {
+        model.setSecretValue();
+        for (int i = GameSettings.PRIMARY_MIN_BARRIER; i < GameSettings.PRIMARY_MAX_BARRIER; i+=10) {
+            model.checkValue(i);
+        }
+        assertFalse(model.getStatistics().isEmpty());
+        model.newStatistics();
+        assertTrue(model.getStatistics().isEmpty());
+    }
+
 }

@@ -62,11 +62,6 @@ public class View {
     public static final String GAME_OVER = "Game over!";
 
     /**
-     * A constant holding the prepared to formatting message containing some range.
-     */
-    public static final String RANGE = "range [%d, %d]";
-
-    /**
      * This method outputs the text message to the console
      *
      * @param message - message to output
@@ -93,7 +88,7 @@ public class View {
      * @param end - end value of the range to output
      */
     public void printMessageAndRange(String message, int start, int end){
-        System.out.print(message + "[" + start + " , " + end + "]: ");
+        System.out.print(message + "(" + start + " , " + end + "): ");
     }
 
     /**
@@ -104,8 +99,9 @@ public class View {
     */
     public void printList(ArrayList list) {
         for (int i = 0; i < list.size(); i++) {
-            System.out.println(list.get(i).toString());
+            System.out.print(list.get(i).toString() + " ");
         }
+        System.out.println();
     }
 
 }
