@@ -75,6 +75,8 @@ public class Model {
     public void setPrimaryBarrier(int minBarrier, int maxBarrier) {
         if (minBarrier > maxBarrier)
             throw new IllegalArgumentException("Minimum barrier cannot be bigger than maximum one.");
+        if (maxBarrier - minBarrier <= 1)
+            throw new IllegalArgumentException("Empty range.");
         this.minBarrier = minBarrier;
         this.maxBarrier = maxBarrier;
     }

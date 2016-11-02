@@ -27,6 +27,11 @@ public class View {
     public static final String PROPOSAL = "Please, enter command or int value in range ";
 
     /**
+     * A constant holding the proposal to enter game range.
+     */
+    public static final String PROPOSAL_RANGE = "Please, enter game range (min, max): ";
+
+    /**
      * A constant holding the wrong input warning.
      */
     public static final String WRONG_INPUT_VALUE = "Wrong input value. ";

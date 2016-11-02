@@ -89,6 +89,7 @@ public class ModelTest {
 
     /**
      * Testing of wrong argument position in {@link Model#setPrimaryBarrier(int, int)}
+     * Incorrect sequence of parameters.
      *
      * @throws Exception - exception in test
      */
@@ -98,6 +99,20 @@ public class ModelTest {
         exception.expectMessage("Minimum barrier cannot be bigger than maximum one.");
         model.setPrimaryBarrier(100, -1);
     }
+
+    /**
+     * Testing of wrong argument position in {@link Model#setPrimaryBarrier(int, int)}
+     * Try to set empty range.
+     *
+     * @throws Exception - exception in test
+     */
+    @Test
+    public void testIllegalArgumentInSetPrimaryBarrierEmptyRange() throws Exception {
+        exception.expect(IllegalArgumentException.class);
+        exception.expectMessage("Empty range.");
+        model.setPrimaryBarrier(5,6);
+    }
+
 
     /**
      * Test setting min and max barriers in {@link Model}

@@ -41,10 +41,16 @@ public class Controller {
     public void start() {
         view.printMessage(View.GREETING + "\n" + View.HELP + "\n");
 
-        model.setPrimaryBarrier(GameSettings.PRIMARY_MIN_BARRIER, GameSettings.PRIMARY_MAX_BARRIER);
+        Scanner scanner = new Scanner(System.in);
+
+//        model.setPrimaryBarrier(GameSettings.PRIMARY_MIN_BARRIER, GameSettings.PRIMARY_MAX_BARRIER);
+        initPrimaryBarriers(scanner);
         model.setSecretValue();
 
-        Scanner scanner = new Scanner(System.in);
+
+
+
+
         int goal;
         while ((goal = inputIntValueWithScanner(scanner))!=INTERRUPT_CODE) {
             if (model.checkValue(goal)) {
@@ -98,6 +104,35 @@ public class Controller {
             } catch (NumberFormatException ex) {
                 // catch exception if entered string value have not been parsed to integer value
                 // show warning message and write statistics
+                view.printMessage(View.WRONG_INPUT_VALUE + View.TRY_AGAIN);
+            }
+        }
+    }
+
+    /**
+     * This method reads data from input stream and sets game primary barriers
+     *
+     * @param scanner {@link Scanner} for input stream
+     */
+    public void initPrimaryBarriers(Scanner scanner) {
+        int minBarrier, maxBarrier;
+        while (true) {
+            view.printMessage(View.PROPOSAL_RANGE);
+            try {
+                if(scanner.hasNextInt()) minBarrier = scanner.nextInt();
+                else {
+                    scanner.next();
+                    continue;
+                }
+                if (scanner.hasNextInt()) maxBarrier = scanner.nextInt();
+                else {
+                    scanner.next();
+                    continue;
+                }
+                scanner.nextLine();
+                model.setPrimaryBarrier(minBarrier, maxBarrier);
+                break;
+            } catch (IllegalArgumentException ex) {
                 view.printMessage(View.WRONG_INPUT_VALUE + View.TRY_AGAIN);
             }
         }
