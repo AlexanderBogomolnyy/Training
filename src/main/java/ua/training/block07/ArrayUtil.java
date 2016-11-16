@@ -1,7 +1,6 @@
 package ua.training.block07;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 
 /**
  * <p> This class provides methods for processing arrays.
@@ -133,6 +132,39 @@ public class ArrayUtil {
             quickSort(array, low, j);
         if (high > i)
             quickSort(array, i, high);
+    }
+
+    /**
+     * This method processes array of integer values and returns
+     * the Map<Integer, Collection<Integer>> in which Key is repeatability of some Integer value
+     * and Value is Collection<Integer> contains Integer values repeated Key-times
+     *
+     * @param array - array of integer values
+     * @return - return Map, in which Key is repeatability of some value and
+     *           Value is Collection contains values repeated Key-times
+     */
+    public Map<Integer, Collection<Integer>> collectByRepeatability(int[] array) {
+        Map<Integer, Collection<Integer>> result = new TreeMap<>();
+        Map<Integer, Integer> selector = new HashMap<>();
+        for (Integer integer: array) {
+            if(selector.containsKey(integer)) {
+                int counter = selector.get(integer);
+                selector.put(integer, ++counter);
+            } else {
+                selector.put(integer, 1);
+            }
+        }
+        for(Map.Entry<Integer,Integer> entry: selector.entrySet()) {
+            Collection <Integer> collection;
+            if(result.containsKey(entry.getValue())) {
+                collection = result.get(entry.getValue());
+            } else {
+                collection = new TreeSet<>();
+                result.put(entry.getValue(), collection);
+            }
+            collection.add(entry.getKey());
+        }
+        return result;
     }
 
 }
