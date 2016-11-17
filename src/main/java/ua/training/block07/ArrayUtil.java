@@ -1,6 +1,7 @@
 package ua.training.block07;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * <p> This class provides methods for processing arrays.
@@ -137,7 +138,7 @@ public class ArrayUtil {
     /**
      * This method processes array of integer values and returns
      * the Map<Integer, Collection<Integer>> in which Key is repeatability of some Integer value
-     * and Value is Collection<Integer> contains Integer values repeated Key-times
+     * and Value is Collection<Integer> contains the Integer values repeated Key-times
      *
      * @param array - array of integer values
      * @return - return Map, in which Key is repeatability of some value and
@@ -167,4 +168,22 @@ public class ArrayUtil {
         return result;
     }
 
+    /**
+     * This method utilizes Java Stream API.
+     * It processes array of integer values and returns
+     * the Map<Integer, Collection<Integer>> in which Key is repeatability of some integer value
+     * and Value is Collection<Integer> contains the integer values repeated Key-times
+     *
+     * @param array - array of integer values
+     * @return - return Map, in which Key is repeatability of some value and
+     *           Value is Collection contains values repeated Key-times
+     */
+    public Map<Integer, Collection<Integer>> collectByRepeatabilityWithStream(int[] array) {
+        return Arrays.stream(array).boxed()
+                .collect(Collectors.groupingBy(val -> val, Collectors.counting()))
+                .entrySet()
+                .stream()
+                .collect(Collectors.groupingBy(val -> val.getValue().intValue(),
+                        Collectors.mapping(Map.Entry::getKey, Collectors.toCollection(TreeSet::new))));
+    }
 }

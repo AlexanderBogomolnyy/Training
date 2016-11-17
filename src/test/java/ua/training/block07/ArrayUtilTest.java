@@ -143,6 +143,20 @@ public class ArrayUtilTest {
         }
     }
 
+    /**
+     * Test case for collectByRepeatabilityWithStream(int[]) method
+     *
+     * @throws Exception - some unexpected exception
+     */
+    @Test
+    public void testCollectByRepeatabilityWithStream() throws Exception {
+        this.initForCollectByRepeatability();
+        for(int i = 0; i < third.length; i++) {
+            Map<Integer,Collection<Integer>> repetition = util.collectByRepeatabilityWithStream(third[i]);
+            assertThat(collected[i], is(repetition));
+        }
+    }
+
     // Initializing test data for collectByRepeatability() method
     private void initForCollectByRepeatability() {
         third = new int[][] {

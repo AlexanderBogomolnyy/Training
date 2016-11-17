@@ -2,7 +2,6 @@ package ua.training.block07;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,6 +41,11 @@ public class Runner {
         System.out.println("---== Counting of value repetition ==----");
         Map<Integer,Collection<Integer>> repetition = util.collectByRepeatability(arrayThird);
         System.out.println(repetition.toString());
+        System.out.println();
+
+        System.out.println("---== Counting of value repetition (using Stream API) ==----");
+        Map<Integer,Collection<Integer>> repetitionWithStream = util.collectByRepeatabilityWithStream(arrayThird);
+        System.out.println(repetitionWithStream.toString());
         System.out.println();
     }
 }
