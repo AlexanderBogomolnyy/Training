@@ -3,13 +3,23 @@ package ua.training.company;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * <p> The Manager behaviour class.
+ * This class implements EmployeeScope interface.
+ *
+ * @author Alexander Bogomolnyy
+ * @version 1.0 16.12.2016.
+ */
 public class ManagerScope implements EmployeeScope {
 
-
-//    private static final String CANNOT_CHANGE_POSITION = "To many workers in subjection. Add more successors.";
-
-
+    /**
+     * List of workers for current manager
+     */
     List<Worker> workers = new ArrayList<>();
+
+    /**
+     * The permissible amount of workers
+     */
     int amount = 0;
 
     @Override
@@ -76,6 +86,7 @@ public class ManagerScope implements EmployeeScope {
         return true;
     }
 
+    // fount free places for workers at current successor
     private int freePlaces(Manager[] managers) {
         int count = 0;
         for(Manager manager: managers) {

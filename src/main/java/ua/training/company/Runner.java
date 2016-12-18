@@ -3,6 +3,12 @@ package ua.training.company;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * <p> The Runner class with main executive method.
+ *
+ * @author Alexander Bogomolnyy
+ * @version 1.0 16.12.2016.
+ */
 public class Runner {
 
     public static void main(String[] args) {

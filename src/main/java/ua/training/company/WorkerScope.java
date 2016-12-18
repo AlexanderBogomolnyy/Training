@@ -2,6 +2,13 @@ package ua.training.company;
 
 import java.util.List;
 
+/**
+ * <p> The Worker behaviour class.
+ * This class implements EmployeeScope interface.
+ *
+ * @author Alexander Bogomolnyy
+ * @version 1.0 16.12.2016.
+ */
 public class WorkerScope implements EmployeeScope {
 
     @Override

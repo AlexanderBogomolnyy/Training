@@ -2,6 +2,13 @@ package ua.training.company;
 
 import java.util.Date;
 
+/**
+ * <p> The Personal data class.
+ * This class contains employee personal data like: name, surname and birthday
+ *
+ * @author Alexander Bogomolnyy
+ * @version 1.0 16.12.2016.
+ */
 public class PersonalData {
 
     private String name;
